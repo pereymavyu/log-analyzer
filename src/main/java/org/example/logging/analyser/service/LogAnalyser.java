@@ -27,16 +27,15 @@ public class LogAnalyser {
 
             while ((currentLine = reader.readLine()) != null) {
                 LogRecord logRecord = LogParser.parseLine(currentLine);
-                boolean isSuccessfulRequest = isSuccessfulRequest(logRecord);
-                totalStats.addNewLogRecordInfo(isSuccessfulRequest);
+                logRecord.setIsSuccessful(isSuccessfulRequest(logRecord));
 
+                totalStats.addLogRecord(logRecord);
                 boolean isAvailabilityOk = totalStats.calculateAvailability() >= minAvailability;
 
                 if (lowAvailabilityPeriod == null && !isAvailabilityOk) {
-                    lowAvailabilityPeriod = new AvailabilityMonitoringPeriod(logRecord.getDateTime());
-                    lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
+                    lowAvailabilityPeriod = new AvailabilityMonitoringPeriod(logRecord);
                 } else if (lowAvailabilityPeriod != null && !isAvailabilityOk) {
-                    lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
+                    lowAvailabilityPeriod.addLogRecord(logRecord);
                 } else if (lowAvailabilityPeriod != null) {
                     logLowAvailabilityPeriod(lowAvailabilityPeriod);
                     lowAvailabilityPeriod = null;

@@ -10,13 +10,15 @@ public class AvailabilityMonitoringPeriod {
     private final Date start;
     private Date end;
 
-    public AvailabilityMonitoringPeriod(Date start) {
+    public AvailabilityMonitoringPeriod(LogRecord logRecord) {
         stats = new AvailabilityStatistics();
-        this.start = start;
+        stats.addLogRecord(logRecord);
+        start = logRecord.getDateTime();
+        end = logRecord.getDateTime();
     }
 
-    public void addNewLogRecordInfo(boolean isSuccessful, Date requestDate) {
-        stats.addNewLogRecordInfo(isSuccessful);
-        end = requestDate;
+    public void addLogRecord(LogRecord logRecord) {
+        stats.addLogRecord(logRecord);
+        end = logRecord.getDateTime();
     }
 }

@@ -7,8 +7,8 @@ public class AvailabilityStatistics {
     private long successRequestCount;
     private long failedRequestCount;
 
-    public void addNewLogRecordInfo(boolean isSuccess) {
-        if (isSuccess) {
+    public void addLogRecord(LogRecord logRecord) {
+        if (logRecord.getIsSuccessful()) {
             ++successRequestCount;
         } else {
             ++failedRequestCount;
