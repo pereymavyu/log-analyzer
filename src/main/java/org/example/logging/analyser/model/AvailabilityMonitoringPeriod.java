@@ -5,13 +5,13 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public class LowAvailabilityPeriod {
-    private final AvailabilityStats stats;
+public class AvailabilityMonitoringPeriod {
+    private final AvailabilityStatistics stats;
     private final Date start;
     private Date end;
 
-    public LowAvailabilityPeriod(Date start) {
-        stats = new AvailabilityStats();
+    public AvailabilityMonitoringPeriod(Date start) {
+        stats = new AvailabilityStatistics();
         this.start = start;
     }
 

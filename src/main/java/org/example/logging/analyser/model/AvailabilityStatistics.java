@@ -3,7 +3,7 @@ package org.example.logging.analyser.model;
 import lombok.Getter;
 
 @Getter
-public class AvailabilityStats {
+public class AvailabilityStatistics {
     private long successRequestCount;
     private long failedRequestCount;
 

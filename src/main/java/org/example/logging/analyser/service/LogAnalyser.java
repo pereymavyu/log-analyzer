@@ -2,17 +2,13 @@ package org.example.logging.analyser.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.logging.analyser.model.AvailabilityStats;
+import org.example.logging.analyser.model.AvailabilityMonitoringPeriod;
+import org.example.logging.analyser.model.AvailabilityStatistics;
 import org.example.logging.analyser.model.LogRecord;
-import org.example.logging.analyser.model.LowAvailabilityPeriod;
-import org.example.logging.analyser.model.ServiceAvailabilityStatus;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import static org.example.logging.analyser.model.ServiceAvailabilityStatus.ACCEPTABLE;
-import static org.example.logging.analyser.model.ServiceAvailabilityStatus.NOT_ACCEPTABLE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,26 +20,24 @@ public class LogAnalyser {
     public void analyze(InputStream inputStream) {
         log.info("Log analysis started");
 
-        AvailabilityStats totalStats = new AvailabilityStats();
+        AvailabilityStatistics totalStats = new AvailabilityStatistics();
         String currentLine = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            LowAvailabilityPeriod lowAvailabilityPeriod = null;
+            AvailabilityMonitoringPeriod lowAvailabilityPeriod = null;
 
             while ((currentLine = reader.readLine()) != null) {
                 LogRecord logRecord = LogParser.parseLine(currentLine);
                 boolean isSuccessfulRequest = isSuccessfulRequest(logRecord);
                 totalStats.addNewLogRecordInfo(isSuccessfulRequest);
 
-                ServiceAvailabilityStatus availabilityStatus = getAvailabilityStatus(
-                        totalStats.calculateAvailability()
-                );
+                boolean isAvailabilityOk = totalStats.calculateAvailability() >= minAvailability;
 
-                if (lowAvailabilityPeriod == null && availabilityStatus == NOT_ACCEPTABLE) {
-                    lowAvailabilityPeriod = new LowAvailabilityPeriod(logRecord.getDateTime());
+                if (lowAvailabilityPeriod == null && !isAvailabilityOk) {
+                    lowAvailabilityPeriod = new AvailabilityMonitoringPeriod(logRecord.getDateTime());
                     lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
-                } else if (lowAvailabilityPeriod != null && availabilityStatus == NOT_ACCEPTABLE) {
+                } else if (lowAvailabilityPeriod != null && !isAvailabilityOk) {
                     lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
-                } else if (lowAvailabilityPeriod != null && availabilityStatus == ACCEPTABLE) {
+                } else if (lowAvailabilityPeriod != null) {
                     logLowAvailabilityPeriod(lowAvailabilityPeriod);
                     lowAvailabilityPeriod = null;
                 }
@@ -69,13 +63,7 @@ public class LogAnalyser {
         return !String.valueOf(logRecord.getHttpCode()).startsWith("5") && logRecord.getResponseTime() <= maxResponseTime;
     }
 
-    private ServiceAvailabilityStatus getAvailabilityStatus(double availability) {
-        return availability >= minAvailability
-                ? ACCEPTABLE
-                : NOT_ACCEPTABLE;
-    }
-
-    private void logLowAvailabilityPeriod(LowAvailabilityPeriod lowAvailabilityPeriod) {
+    private void logLowAvailabilityPeriod(AvailabilityMonitoringPeriod lowAvailabilityPeriod) {
         resultLogger.logAvailabilityStats(
                 lowAvailabilityPeriod.getStart(),
                 lowAvailabilityPeriod.getEnd(),
