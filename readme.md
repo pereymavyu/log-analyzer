@@ -6,7 +6,7 @@
 
 Сборка jar-файла запускается командой `mvn clean package` (требуется установленный Apache Maven)
 
-Запуск командой `cat access.log | java -jar log-analyzer -a 99.9 -t 45` (Linux) или `java -jar log-analyzer.jar -a 98.0 -t 100 < access.log` (Windows)
+Запуск командой `cat access.log | java -jar log-analyzer.jar -a 99.9 -t 45` (Linux) или `java -jar log-analyzer.jar -a 99.9 -t 45 < access.log` (Windows cmd)
 
 Параметры запуска:
 
@@ -19,7 +19,9 @@
 Парсер предназначен для файлов со следующей структурой:
 
 `192.168.32.181 - - [14/06/2017:16:47:02 +1000] "PUT /rest/v1.4/documents?zone=default&_rid=6076537c HTTP/1.1" 200 2 44.510983 "-" "@list-item-updater" prio:0
+
 192.168.32.181 - - [14/06/2017:16:47:02 +1000] "PUT /rest/v1.4/documents?zone=default&_rid=7ae28555 HTTP/1.1" 200 2 23.251219 "-" "@list-item-updater" prio:0
+
 192.168.32.181 - - [14/06/2017:16:47:02 +1000] "PUT /rest/v1.4/documents?zone=default&_rid=e356713 HTTP/1.1" 200 2 30.164372 "-" "@list-item-updater" prio:0
 `
 
@@ -39,5 +41,7 @@
 Пример использования программы:
 
 $ cat access.log | java -jar analyze -u 99.9 -t 45
+
 13:32:26 13:33:15 94.5
+
 15:23:02 15:23:08 99.8
