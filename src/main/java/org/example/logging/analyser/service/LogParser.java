@@ -13,7 +13,7 @@ public class LogParser {
 
     private static final String NON_SPACE_GROUP_PATTERN_STRING = "(\\S+)";
     private static final String SPACE_SEPARATOR_PATTERN_STRING = "\\s";
-    private static final String ZONED_DATE_TIME_PATTERN_STRING = "(?<time>\\[\\d{2}/\\d{2}/\\d{4}:\\d{2}:\\d{2}:\\d{2}\\s[+\\-]\\d{4}])";
+    private static final String ZONED_DATE_TIME_PATTERN_STRING = "(?<date>\\[\\d{2}/\\d{2}/\\d{4}:\\d{2}:\\d{2}:\\d{2}\\s[+\\-]\\d{4}])";
     private static final String QUOTED_GROUP_PATTERN_STRING = "(\"[^\"]+\")";
     private static final String HTTP_CODE_PATTERN_STRING = "(?<httpCode>\\d{3})";
     private static final String REQUEST_TIME_PATTERN_STRING = "(?<requestTime>[\\d.]+)";
@@ -40,7 +40,7 @@ public class LogParser {
             if (!matcher.matches()) {
                 throw new IllegalArgumentException("Log does not match the pattern");
             }
-            String dateString = matcher.group("time");
+            String dateString = matcher.group("date");
             dateString = dateString.substring(1, dateString.length() - 1);
 
             Date date = DateTimeUtils.parseFromZonedDateTimeString(dateString);

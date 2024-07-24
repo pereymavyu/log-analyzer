@@ -2,7 +2,9 @@ package org.example.logging.analyser.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.logging.analyser.model.AvailabilityStats;
 import org.example.logging.analyser.model.LogRecord;
+import org.example.logging.analyser.model.LowAvailabilityPeriod;
 import org.example.logging.analyser.model.ServiceAvailabilityStatus;
 
 import java.io.BufferedReader;
@@ -25,29 +27,29 @@ public class LogAnalyser {
         AvailabilityStats totalStats = new AvailabilityStats();
         String currentLine = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            LowAvailabilityPeriod currentLowAvailabilityPeriod = null;
+            LowAvailabilityPeriod lowAvailabilityPeriod = null;
 
             while ((currentLine = reader.readLine()) != null) {
                 LogRecord logRecord = LogParser.parseLine(currentLine);
                 boolean isSuccessfulRequest = isSuccessfulRequest(logRecord);
                 totalStats.addNewLogRecordInfo(isSuccessfulRequest);
 
-                ServiceAvailabilityStatus currentStatus = getAvailabilityStatus(
+                ServiceAvailabilityStatus availabilityStatus = getAvailabilityStatus(
                         totalStats.calculateAvailability()
                 );
 
-                if (currentLowAvailabilityPeriod == null && currentStatus == NOT_ACCEPTABLE) {
-                    currentLowAvailabilityPeriod = new LowAvailabilityPeriod(logRecord.getDateTime());
-                    currentLowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
-                } else if (currentLowAvailabilityPeriod != null && currentStatus == NOT_ACCEPTABLE) {
-                    currentLowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
-                } else if (currentLowAvailabilityPeriod != null && currentStatus == ACCEPTABLE) {
-                    logLowAvailabilityPeriod(currentLowAvailabilityPeriod);
-                    currentLowAvailabilityPeriod = null;
+                if (lowAvailabilityPeriod == null && availabilityStatus == NOT_ACCEPTABLE) {
+                    lowAvailabilityPeriod = new LowAvailabilityPeriod(logRecord.getDateTime());
+                    lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
+                } else if (lowAvailabilityPeriod != null && availabilityStatus == NOT_ACCEPTABLE) {
+                    lowAvailabilityPeriod.addNewLogRecordInfo(isSuccessfulRequest, logRecord.getDateTime());
+                } else if (lowAvailabilityPeriod != null && availabilityStatus == ACCEPTABLE) {
+                    logLowAvailabilityPeriod(lowAvailabilityPeriod);
+                    lowAvailabilityPeriod = null;
                 }
             }
-            if (currentLowAvailabilityPeriod != null) {
-                logLowAvailabilityPeriod(currentLowAvailabilityPeriod);
+            if (lowAvailabilityPeriod != null) {
+                logLowAvailabilityPeriod(lowAvailabilityPeriod);
             }
 
             log.info("Log analysis completed successfully");
@@ -73,11 +75,11 @@ public class LogAnalyser {
                 : NOT_ACCEPTABLE;
     }
 
-    private void logLowAvailabilityPeriod(LowAvailabilityPeriod currentLowAvailabilityPeriod) {
+    private void logLowAvailabilityPeriod(LowAvailabilityPeriod lowAvailabilityPeriod) {
         resultLogger.logAvailabilityStats(
-                currentLowAvailabilityPeriod.getStart(),
-                currentLowAvailabilityPeriod.getEnd(),
-                currentLowAvailabilityPeriod.getStats().calculateAvailability()
+                lowAvailabilityPeriod.getStart(),
+                lowAvailabilityPeriod.getEnd(),
+                lowAvailabilityPeriod.getStats().calculateAvailability()
         );
     }
 }

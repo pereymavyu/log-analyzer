@@ -7,7 +7,7 @@ public class CliParser {
     private static final String MIN_AVAILABILITY_LEVEL_CLI_OPTION = "minAvailabilityLevel";
     private static final String MAX_RESPONSE_TIME_CLI_OPTION = "maxResponseTime";
 
-    CommandLine commandLine;
+    private final CommandLine commandLine;
 
     public CliParser(String[] args) throws ParseException {
         commandLine = getCommandLine(args);

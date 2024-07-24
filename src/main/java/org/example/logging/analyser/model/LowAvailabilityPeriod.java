@@ -1,4 +1,4 @@
-package org.example.logging.analyser.service;
+package org.example.logging.analyser.model;
 
 import lombok.Getter;
 
