@@ -1,21 +1,13 @@
-package org.example.logging.analyser;
+package org.example.logging.analyser.service;
 
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
-public class RequestStatistics {
+public class AvailabilityStats {
     private long successRequestCount;
     private long failedRequestCount;
 
-    @Setter
-    private Date start;
-    @Setter
-    private Date end;
-
-    public void incrementRequestCount(boolean isSuccess) {
+    public void addNewLogRecordInfo(boolean isSuccess) {
         if (isSuccess) {
             ++successRequestCount;
         } else {

@@ -1,5 +1,8 @@
 package org.example.logging.analyser;
 
+import org.example.logging.analyser.service.AnalysisResultHandler;
+import org.example.logging.analyser.service.LogAnalyser;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,8 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LogAnalyserTest {
@@ -33,7 +35,7 @@ class LogAnalyserTest {
 
         sut.analyze(Files.newInputStream(Paths.get(Objects.requireNonNull(res).toURI())));
 
-        verify(resultHandler).logAvailabilityStatistics(
+        verify(resultHandler).logAvailabilityStats(
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:01 +1000", formatter).toInstant()),
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:05 +1000", formatter).toInstant()),
                 60.0
@@ -47,21 +49,30 @@ class LogAnalyserTest {
 
         sut.analyze(Files.newInputStream(Paths.get(Objects.requireNonNull(res).toURI())));
 
-        verify(resultHandler).logAvailabilityStatistics(
+        verify(resultHandler).logAvailabilityStats(
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:01 +1000", formatter).toInstant()),
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:01 +1000", formatter).toInstant()),
                 0.0
         );
-        verify(resultHandler).logAvailabilityStatistics(
+        verify(resultHandler).logAvailabilityStats(
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:03 +1000", formatter).toInstant()),
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:03 +1000", formatter).toInstant()),
                 0.0
         );
-        verify(resultHandler).logAvailabilityStatistics(
+        verify(resultHandler).logAvailabilityStats(
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:05 +1000", formatter).toInstant()),
                 Date.from(ZonedDateTime.parse("14/06/2017:16:47:05 +1000", formatter).toInstant()),
                 0.0
         );
         verifyNoMoreInteractions(resultHandler);
+    }
+
+    @Test
+    void analyze_fail() {
+        LogAnalyser sut = new LogAnalyser(50.0, 100, resultHandler);
+        URL res = getClass().getClassLoader().getResource("log_analyzer_test_3.log");
+
+        Assertions.assertDoesNotThrow(() -> sut.analyze(Files.newInputStream(Paths.get(Objects.requireNonNull(res).toURI()))));
+        verifyNoInteractions(resultHandler);
     }
 }

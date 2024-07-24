@@ -1,8 +1,8 @@
-package org.example.logging.analyser;
+package org.example.logging.analyser.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.logging.analyser.model.LogRecord;
-import org.example.logging.analyser.utils.DateUtils;
+import org.example.logging.analyser.utils.DateTimeUtils;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ public class LogParser {
 
             String dateString = tokens[3] + " " + tokens[4];
             dateString = dateString.substring(1, dateString.length() - 1);
-            Date date = DateUtils.parseFromZonedDateTimeString(dateString);
+            Date date = DateTimeUtils.parseFromZonedDateTimeString(dateString);
             int httpCode = Integer.parseInt(tokens[8]);
             double responseTime = Double.parseDouble(tokens[10]);
 

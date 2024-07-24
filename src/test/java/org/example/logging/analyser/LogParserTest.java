@@ -1,7 +1,8 @@
 package org.example.logging.analyser;
 
 import org.example.logging.analyser.model.LogRecord;
-import org.example.logging.analyser.utils.DateUtils;
+import org.example.logging.analyser.service.LogParser;
+import org.example.logging.analyser.utils.DateTimeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ class LogParserTest {
         String log = "192.168.32.181 - - [14/06/2017:16:48:51 +1000] \"PUT /rest/v1.4/documents?zone=default&_rid=984500ec HTTP/1.1\" 200 2 21.409405 \"-\" \"@list-item-updater\" prio:0";
         LogRecord actual = LogParser.parseLine(log);
         Assertions.assertEquals(
-                DateUtils.parseFromZonedDateTimeString("14/06/2017:16:48:51 +1000"),
+                DateTimeUtils.parseFromZonedDateTimeString("14/06/2017:16:48:51 +1000"),
                 actual.getDateTime()
         );
         Assertions.assertEquals(
