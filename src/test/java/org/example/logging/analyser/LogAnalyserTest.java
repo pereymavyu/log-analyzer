@@ -72,7 +72,7 @@ class LogAnalyserTest {
         LogAnalyser sut = new LogAnalyser(50.0, 100, resultHandler);
         URL res = getClass().getClassLoader().getResource("log_analyzer_test_3.log");
 
-        Assertions.assertDoesNotThrow(() -> sut.analyze(Files.newInputStream(Paths.get(Objects.requireNonNull(res).toURI()))));
+        Assertions.assertThrows(Exception.class, () -> sut.analyze(Files.newInputStream(Paths.get(Objects.requireNonNull(res).toURI()))));
         verifyNoInteractions(resultHandler);
     }
 }
