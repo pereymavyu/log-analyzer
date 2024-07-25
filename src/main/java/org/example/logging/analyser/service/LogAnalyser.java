@@ -1,6 +1,7 @@
 package org.example.logging.analyser.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.logging.analyser.model.AvailabilityMonitoringPeriod;
 import org.example.logging.analyser.model.AvailabilityStatistics;
@@ -17,12 +18,13 @@ public class LogAnalyser {
     private final double maxResponseTime;
     private final AnalysisResultHandler resultLogger;
 
-    public void analyze(InputStream inputStream) {
+    @SneakyThrows
+    public void analyze(InputStream logs) {
         log.info("Log analysis started");
 
         AvailabilityStatistics totalStats = new AvailabilityStatistics();
         String currentLine = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(logs))) {
             AvailabilityMonitoringPeriod lowAvailabilityPeriod = null;
 
             while ((currentLine = reader.readLine()) != null) {
@@ -52,9 +54,9 @@ public class LogAnalyser {
                             "Error during log analysis. Number of processed records \"%d\". Last processed record \"%s\"",
                             totalStats.getSuccessRequestCount() + totalStats.getFailedRequestCount(),
                             currentLine
-                    ),
-                    e
+                    )
             );
+            throw e;
         }
     }
 

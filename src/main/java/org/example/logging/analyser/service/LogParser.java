@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class LogParser {
-
     private static final String NON_SPACE_GROUP_PATTERN_STRING = "(\\S+)";
     private static final String SPACE_SEPARATOR_PATTERN_STRING = "\\s";
     private static final String ZONED_DATE_TIME_PATTERN_STRING = "(?<date>\\[\\d{2}/\\d{2}/\\d{4}:\\d{2}:\\d{2}:\\d{2}\\s[+\\-]\\d{4}])";

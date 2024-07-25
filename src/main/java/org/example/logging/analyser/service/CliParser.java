@@ -3,7 +3,6 @@ package org.example.logging.analyser.service;
 import org.apache.commons.cli.*;
 
 public class CliParser {
-
     private static final String MIN_AVAILABILITY_LEVEL_CLI_OPTION = "minAvailabilityLevel";
     private static final String MAX_RESPONSE_TIME_CLI_OPTION = "maxResponseTime";
 
