@@ -10,7 +10,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class LogRecord {
     private final Date dateTime;
-    private final int HttpCode;
+    private final int httpCode;
     private final double responseTime;
     @Setter
     private Boolean isSuccessful;
