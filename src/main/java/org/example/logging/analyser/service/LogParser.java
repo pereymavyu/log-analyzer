@@ -52,10 +52,8 @@ public class LogParser {
                     responseTime
             );
         } catch (Exception e) {
-            throw new RuntimeException(
-                    String.format("Error during parsing record \"%s\"", logLine),
-                    e
-            );
+            log.error(String.format("Error during parsing record \"%s\"", logLine));
+            throw e;
         }
     }
 }
