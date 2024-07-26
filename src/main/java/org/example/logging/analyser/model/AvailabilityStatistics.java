@@ -1,14 +1,12 @@
 package org.example.logging.analyser.model;
 
 import lombok.Getter;
-import lombok.NonNull;
 
 @Getter
 public class AvailabilityStatistics {
     private long successRequestCount;
     private long failedRequestCount;
 
-    @NonNull
     public void addLogRecord(LogRecord logRecord) {
         if (logRecord.getIsSuccessful()) {
             ++successRequestCount;
